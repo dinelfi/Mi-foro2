@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SubTexto - Foro Termux</title>
+  <style>
+    body { background-color: #ffeef0; color: #800000; font-family: sans-serif; font-size: 14px; margin: 15px; }
+    h1 { font-size: 22px; margin-bottom: 5px; }
+    .subtitle { font-size: 12px; color: #666; margin-bottom: 15px; }
+    .form-box { background: #f0e0d6; border: 1px solid #d9bfb7; padding: 10px; max-width: 450px; margin-bottom: 20px; }
+    textarea { width: 95%; height: 60px; margin-bottom: 5px; }
+    .post { background: #f0e0d6; border: 1px solid #d9bfb7; padding: 10px; margin-bottom: 10px; max-width: 550px; }
+    .post-header { font-size: 11px; color: #444; }
+    .author { color: #117743; font-weight: bold; }
+    .user-id { background: #e2c2b9; padding: 1px 4px; font-family: monospace; border-radius: 3px; }
+    .post-message { color: #000; margin: 8px 0; }
+    .replies-list { border-top: 1px dashed #d9bfb7; padding-top: 5px; font-size: 11px; margin-top: 8px; }
+    .reply-tag { background: #e4d0c5; border: 1px solid #c8b0a6; padding: 2px 5px; text-decoration: none; color: #0000ee; display: inline-block; margin-top: 3px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+  <h1>SubTexto</h1>
+  <div class="subtitle">[ /g/ - Gaming | /dev/ - Código | /b/ - Random | /m/ - Música ]</div>
+
+  <div class="form-box">
+    <form action="/post" method="POST" enctype="multipart/form-data">
+      <textarea name="mensaje" placeholder="Escribe tu mensaje en SubTexto... (Usa >>ID para responder)"></textarea><br>
+      <input type="file" name="imagen" accept="image/*" style="margin-bottom: 8px;"><br>
+      <button type="submit">Publicar en SubTexto</button>
+    </form>
+  </div>
+
+  <div class="thread">
+    {% for post in posts %}
+    <div class="post" id="p{{ post.id }}">
+      <div class="post-header">
+        <span class="author">Anónimo</span>
+        <span class="user-id">ID: {{ post.user_id }}</span>
+        <span>{{ post.fecha }}</span>
+        <strong>No. {{ post.id }}</strong>
+      </div>
+      
+      <div class="post-message">{{ post.mensaje }}</div>
+
+      {% if post.imagen %}
+      <div style="margin: 8px 0;">
+        <a href="/static/uploads/{{ post.imagen }}" target="_blank">
+          <img src="/static/uploads/{{ post.imagen }}" style="max-width: 250px; max-height: 250px; border: 1px solid #c8b0a6; display: block;">
+        </a>
+      </div>
+      {% endif %}
+
+      {% if post.replies %}
+      <div class="replies-list">
+        <strong>Respuestas a este post:</strong><br>
+        {% for reply in post.replies %}
+          <a href="#p{{ reply.id }}" class="reply-tag">↪ Anónimo (ID: {{ reply.user_id }}) No. {{ reply.id }} te ha respondido</a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+</body>
+</html>
